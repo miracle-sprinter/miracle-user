@@ -19,10 +19,11 @@ export class UsersService {
     createUserRequest: CreateUserRequest,
   ): Promise<CreateUserResponse> {
     // 먼저 해당 유저가 등록 가능인지 검증
-    const isCreatable = await this.userValidator.isCreatable(createUserRequest);
+    const validationResult: ValidationResult =
+      await this.userValidator.isCreatable(createUserRequest);
 
-    if (!isCreatable) {
-      throw new HttpException(CommonErrors.RESOURCE_DUPLICATION_ERROR, 400);
+    if (!validationResult.success) {
+      throw new HttpException(validationResult.message, 400);
     }
 
     // 비밀번호 해싱
