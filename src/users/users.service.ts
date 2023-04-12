@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './user.repository';
+import { CreateUserRequest } from './dto/request/user.create.request.dto';
+import { CreateUserResponse } from './dto/response/create-user.response.dto';
+import { Role, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(private readonly userRepository: UserRepository) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  // 일반 사용자를 등록하는 메소드
+  async registerUser(
+    createUserRequest: CreateUserRequest,
+  ): Promise<CreateUserResponse> {
+    // 비밀번호 해싱
+    const hashedRequest: CreateUserRequest =
+      await createUserRequest.getHashedRequest();
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+    const user = hashedRequest.toEntity(Role.USER);
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+    const createdUser = await this.userRepository.create(user);
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    return CreateUserResponse.fromEntity(createdUser);
   }
 }
