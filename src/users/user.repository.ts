@@ -1,0 +1,11 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+@Injectable()
+export class UserRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async esrt(): Promise<string> {
+    return new Promise((resolve) => resolve('qwe'));
+  }
+}
