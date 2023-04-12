@@ -3,10 +3,9 @@ import {
   Catch,
   HttpException,
   HttpStatus,
-  Logger,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ResultFactory } from '../results/results.factory';
 
 @Catch()
