@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const PORT = process.env.PORT;
+
   const app = await NestFactory.create(AppModule);
 
   // Global Pipe는 맨 앞에 선언해야한다

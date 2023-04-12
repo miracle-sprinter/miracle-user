@@ -4,7 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ResultFactory } from '../results/results.factory';
 
 @Catch(HttpException)
@@ -14,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
-    response
+    return response
       .status(status)
       .json(ResultFactory.getFailureResult(exception.message));
   }
