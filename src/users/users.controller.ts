@@ -1,34 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { CreateUserRequest } from './dto/request/user.create.request.dto';
+import { Controller, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ResultFactory } from 'src/common/results/results.factory';
 
-@Controller('users')
+@Controller('/api/auth')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // 일반 유저 가입
+  @Post('/register')
+  async registerUser(@Body() createUserRequest: CreateUserRequest) {
+    console.log(createUserRequest instanceof CreateUserRequest);
+    console.log(createUserRequest);
+    const createUserResponse = await this.usersService.registerUser(
+      createUserRequest,
+    );
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return ResultFactory.getSuccessResult(createUserResponse);
   }
 }
