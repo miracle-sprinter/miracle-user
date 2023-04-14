@@ -13,6 +13,18 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      errorHttpStatusCode: 500,
+      exceptionFactory: (errors) => {
+        return new Error(
+          errors
+            .map((error) => {
+              return `${error.property}를 잘못 입력하셨습니다.`;
+            })
+            .join(', '),
+        );
+      },
     }),
   );
 
