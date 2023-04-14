@@ -1,6 +1,6 @@
-import { UserRepository } from './user.repository';
+import { UserRepository } from '../../domain/user.repository';
 import { Injectable } from '@nestjs/common';
-import { CreateUserRequest } from './dto/request/user.create.request.dto';
+import { CreateUserRequest } from '../dto/request/user.create.request.dto';
 import { ValidationResult } from 'src/common/results/validate.result';
 
 @Injectable()
