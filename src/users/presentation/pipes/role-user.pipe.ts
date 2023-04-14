@@ -1,6 +1,6 @@
 import { HttpException, Injectable, PipeTransform } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { ReadUserResponse } from '../dto/response/read.user.response.dto';
+import { ReadUserResponse } from '../../application/dto/response/read.user.response.dto';
 
 @Injectable()
 export class UserRoleExistsPipe implements PipeTransform {

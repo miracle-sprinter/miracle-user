@@ -1,16 +1,16 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { UserRepository } from './user.repository';
-import { CreateUserRequest } from './dto/request/user.create.request.dto';
-import { CreateUserResponse } from './dto/response/create-user.response.dto';
+import { UserRepository } from '../../domain/user.repository';
+import { CreateUserRequest } from '../dto/request/user.create.request.dto';
+import { CreateUserResponse } from '../dto/response/create-user.response.dto';
 import { Role } from '@prisma/client';
-import { UserValidator } from './user.validator';
+import { UserValidator } from '../validator/user.validator';
 import { ValidationResult } from 'src/common/results/validate.result';
-import { LoginRequest } from './dto/request/user.login.request.dto';
-import { LoginResponse } from './dto/response/user.login.response.dto';
+import { LoginRequest } from '../dto/request/user.login.request.dto';
+import { LoginResponse } from '../dto/response/user.login.response.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './dto/request/jwt.payload.dto';
-import { ReadUserResponse } from './dto/response/read.user.response.dto';
+import { JwtPayload } from '../dto/request/jwt.payload.dto';
+import { ReadUserResponse } from '../dto/response/read.user.response.dto';
 
 @Injectable()
 export class UsersService {
