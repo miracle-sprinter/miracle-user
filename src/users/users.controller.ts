@@ -1,8 +1,12 @@
 import { CreateUserRequest } from './dto/request/user.create.request.dto';
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ResultFactory } from 'src/common/results/results.factory';
 import { LoginRequest } from './dto/request/user.login.request.dto';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { ReadUser } from './decorators/user.read.decorator';
+import { UserRoleExistsPipe } from './pipes/role-user.pipe';
+import { ReadUserResponse } from './dto/response/read.user.response.dto';
 
 @Controller('api/auth')
 export class UsersController {
@@ -28,10 +32,20 @@ export class UsersController {
     return ResultFactory.getSuccessResult(createUserResponse);
   }
 
+  // 로그인
   @Post('/login')
   async login(@Body() loginRequest: LoginRequest) {
     const loginResponse = await this.usersService.login(loginRequest);
 
     return ResultFactory.getSuccessResult(loginResponse);
+  }
+
+  // 사용자 프로파일 조회
+  @UseGuards(JwtAuthGuard)
+  @Post('/profile')
+  async readprofile(
+    @ReadUser(UserRoleExistsPipe) authResult: ReadUserResponse,
+  ) {
+    return ResultFactory.getSuccessResult(authResult);
   }
 }
