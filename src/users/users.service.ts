@@ -4,14 +4,18 @@ import { CreateUserRequest } from './dto/request/user.create.request.dto';
 import { CreateUserResponse } from './dto/response/create-user.response.dto';
 import { Role } from '@prisma/client';
 import { UserValidator } from './user.validator';
-import { CommonErrors } from 'src/common/results/errors';
 import { ValidationResult } from 'src/common/results/validate.result';
+import { LoginRequest } from './dto/request/user.login.request.dto';
+import { LoginResponse } from './dto/response/user.login.response.dto';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly userValidator: UserValidator,
     private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
   // 일반 사용자를 등록하는 메소드
@@ -58,5 +62,30 @@ export class UsersService {
     const createdUser = await this.userRepository.create(user);
 
     return CreateUserResponse.fromEntity(createdUser);
+  }
+
+  // 로그인을 처리하는 메소드
+  async login(loginRequest: LoginRequest): Promise<LoginResponse> {
+    const { email, password } = loginRequest;
+
+    const foundUser = await this.userRepository.findByEmail(email);
+
+    if (!foundUser) {
+      throw new HttpException('이메일 혹은 패스워드를 다시 확인해주세요', 400);
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, foundUser.password);
+
+    if (!isPasswordValid) {
+      throw new HttpException('이메일 혹은 패스워드를 다시 확인해주세요', 400);
+    }
+
+    const jwtPayload = {
+      id: foundUser.id,
+      email: foundUser.email,
+      role: foundUser.role,
+    };
+
+    return new LoginResponse(this.jwtService.sign(jwtPayload));
   }
 }
